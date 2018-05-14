@@ -1,13 +1,30 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var _storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+
+var upload = multer({ storage: _storage })
+
+// var upload = multer({dest: 'uploads/'}); //destination
+
 var fs =require('fs'); //fille system
 var app = express();
+app.use('/kyrie', express.static('uploads'))
 app.use(bodyParser.urlencoded({extended: false}));
 app.locals.pretty = true;
 
 app.set('views', './views_file');
 app.set('view engine', 'jade');
-
+app.get('/upload', function(req, res){
+  res.render('upload');
+})
 app.get('/topic/new', function(req, res){
   fs.readdir('data', function(err, files){
     if (err) {
@@ -16,6 +33,11 @@ app.get('/topic/new', function(req, res){
     }
       res.render('new', {topics:files});
   });
+})
+
+app.post('/upload', upload.single('userfile'), function(req, res){
+  console.log(req.file);
+  res.send('Uploaded: ' + req.file.filename);
 })
 
 app.get(['/topic', '/topic/:id'] , function(req, res){
