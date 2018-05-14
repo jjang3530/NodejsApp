@@ -7,19 +7,31 @@ var connection = mysql.createConnection({
 });
 connection.connect();
 
-var sql = 'SELECT * FROM topic';
-connection.query(sql, function(err, rows, fields){
-  if (err) {
-    console.log(err);
-  }else {
-    console.log('rows', rows);
-    console.log('fiedls', fields);
-  }
-})
+// var sql = 'SELECT * FROM topic';
+// connection.query(sql, function(err, rows, fields){
+//   if (err) {
+//     console.log(err);
+//   }else {
+//     for (var i = 0; i < rows.length; i++) {
+//       console.log(rows[i].author);
+//     }
+//   }
+// })
 
 // connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
 //   if (error) throw error;
 //   console.log('The solution is: ', results[0].solution);
 // });
 //
+
+var sql = 'INSERT INTO topic (title, description, author) VALUES(?, ?, ?)';
+var params = ['Supervisor', 'Watcher', 'graphy'];
+connection.query(sql, params, function(err, rows, fields){
+  if (err) {
+    console.log(err);
+  }else {
+    console.log(rows.insertId);
+  }
+})
+
 connection.end();
