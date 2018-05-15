@@ -99,6 +99,37 @@ app.post(['/topic/:id/edit'] , function(req, res){
   })
 });
 
+app.get(['/topic/:id/delete'] , function(req, res){
+  var sql =' SELECT id,title FROM topic';
+  connection.query(sql, function(err, topics, fields){
+  var sql ='SELECT * FROM topic WHERE id=?';
+  var id = req.params.id;
+  connection.query(sql, [id], function(err, topic){
+    if (err) {
+      console.log(err);
+      res.status(500).send('Internal server error');
+    }else {
+      if (topic.length === 0) {
+        console.log('There is no record.');
+        res.status(500).send('Internal server error');
+    }else {
+      res.render('delete', {topics:topics, topic:topic[0]});
+    }
+  }
+  })
+});
+});
+
+app.post(['/topic/:id/delete'] , function(req, res){
+ var id = req.params.id;
+ var sql = 'DELETE FROM topic WHERE id=?';
+ connection.query(sql, [id], function(err, result){
+   res.redirect('/topic/');
+ })
+});
+
+
+
 app.post('/upload', upload.single('userfile'), function(req, res){
   console.log(req.file);
   res.send('Uploaded: ' + req.file.filename);
