@@ -1,3 +1,5 @@
+//Required mysql start
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -147,7 +149,7 @@ app.get(['/topic', '/topic/:id'] , function(req, res){
           res.status(500).send('Internal server error');
         }else {
           res.render('view', {topics:topics, topic:topic[0]})
-        }
+        }44
       })
     }else {
       res.render('view', {topics:topics});
