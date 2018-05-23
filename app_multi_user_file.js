@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var bodyParser = require('body-parser');
+var sha256 = require('sha256');
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({
@@ -29,8 +30,15 @@ app.get('/auth/logout', function(req, res){
 var users = [
   {
     username:'jay',
-    password:'111',
+    password:'7f12d41002688ff29d6b97f18e8a63cd818ae4700a6c6ccf9ca76acd6d86a780',
+    salt:'@#$WDSFSFRS',
     displayname:'JayJoowon'
+  },
+  {
+    username:'jinah',
+    password:'be36ac5e134181a04f92d08ec5bf99525d781df73f2d4744de0c5573a0b322d7',
+    salt: '$#%#!dfgsd',
+    displayname:'Jinah'
   }
   ];
 
@@ -92,7 +100,7 @@ app.post('/auth/login', function(req, res){
   var pwd = req.body.password;
   for (var i = 0; i < users.length; i++) {
     var user = users[i];
-    if (uname === user.username && pwd === user.password) {
+    if (uname === user.username && sha256(pwd+user.salt) === user.password) {
       req.session.displayname = user.displayname;
       return req.session.save(function(){
       res.redirect('/welcome');
