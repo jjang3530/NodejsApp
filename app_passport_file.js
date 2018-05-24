@@ -6,6 +6,7 @@ var bkfd2Password = require("pbkdf2-password");
 var hasher = bkfd2Password();
 var passport =require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({
@@ -129,6 +130,20 @@ passport.use(new LocalStrategy(
         return done(null, false);
   }
 ));
+
+passport.use(new FacebookStrategy({
+    clientID: '605480983146114',
+    clientSecret: '057569aae8fb8becd18b1370a584c0a9',
+    callbackURL: "/auth/facebook/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // User.findOrCreate(..., function(err, user) {
+    //   if (err) { return done(err); }
+    //   done(null, user);
+    // });
+  }
+));
+
 app.post(
   '/auth/login',
   passport.authenticate( //middleware
@@ -145,7 +160,19 @@ app.post(
      })
    }
 );
-
+app.get(
+  '/auth/facebook',
+  passport.authenticate(
+  'facebook'
+));
+app.get('/auth/facebook/callback',
+  passport.authenticate(
+    'facebook',
+     {
+       successRedirect: '/welcome',
+       failureRedirect: '/auth/login'
+     }
+   ));
 
 
 
@@ -184,6 +211,7 @@ app.get('/auth/login', function(req, res){
     <p>
       <input type='submit'>
   </form>
+  <a href="/auth/facebook">FACEBOOK</a>
   `;
   res.send(output);
 })
