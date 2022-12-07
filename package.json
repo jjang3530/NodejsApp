@@ -4,9 +4,9 @@
   "description": "server side javascript test",
   "main": "hellow.js",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.3",
-    "express": "^4.16.3",
+    "express": "^4.18.2",
     "express-mysql-session": "^1.3.0",
     "express-session": "^1.15.6",
     "jade": "^1.11.0",
